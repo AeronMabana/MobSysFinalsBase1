@@ -1,64 +1,137 @@
 ﻿@page "/register"
-<form @onsubmit="RegisterUser">
-    <div class="card enhanced">
+
+<style>
+    .custom-register-bg {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f3f3f3 0%, #c8e6ff 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .custom-register-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(60, 80, 140, 0.11);
+        padding: 2.5rem 2rem 2rem 2rem;
+        width: 100%;
+        max-width: 420px;
+        transition: box-shadow 0.3s;
+        position: relative;
+    }
+
+        .custom-register-card:hover {
+            box-shadow: 0 16px 48px 4px rgba(60, 80, 140, 0.18);
+        }
+
+    .custom-register-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #23508d;
+        margin-bottom: 1.5rem;
+        letter-spacing: 1px;
+        text-align: center;
+    }
+
+    .custom-input {
+        width: 100%;
+        padding: 0.85rem 1rem;
+        border: none;
+        border-radius: 12px;
+        background: #f6fafd;
+        margin-bottom: 1.1rem;
+        font-size: 1.08rem;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: 0 2px 6px rgba(60, 80, 140, 0.03);
+    }
+
+        .custom-input:focus {
+            background: #e3f1ff;
+            outline: none;
+            box-shadow: 0 2px 12px rgba(35,80,141, 0.07);
+        }
+
+    .custom-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #23508d;
+        font-weight: 500;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+    }
+
+    .custom-register-btn {
+        width: 100%;
+        padding: 0.9rem;
+        background: linear-gradient(90deg, #4f8cff 60%, #23508d 100%);
+        border: none;
+        border-radius: 12px;
+        color: #fff;
+        font-size: 1.15rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: background 0.2s, box-shadow 0.2s;
+        box-shadow: 0 4px 18px rgba(79, 140, 255, 0.11);
+        margin-top: 0.5rem;
+    }
+
+        .custom-register-btn:hover, .custom-register-btn:focus {
+            background: linear-gradient(90deg, #23508d 60%, #4f8cff 100%);
+            box-shadow: 0 8px 32px rgba(79, 140, 255, 0.18);
+        }
+
+    .custom-alert {
+        background: #ffe6e6;
+        color: #b71c1c;
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.2rem;
+        text-align: center;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6em;
+    }
+
+        .custom-alert i {
+            font-size: 1.1rem;
+        }
+</style>
+
+<div class="custom-register-bg">
+    <div class="custom-register-card">
+        <div class="custom-register-title">Create Account</div>
         @if (!string.IsNullOrWhiteSpace(StatusMessage))
         {
-            <div class="alert alert-@Status">
-                <i class="fa fa-info-circle"></i>&nbsp;
+            <div class="custom-alert">
+                <i class="fa fa-info-circle"></i>
                 @StatusMessage
             </div>
         }
-        <fieldset>
-            <legend>Username:</legend>
-            <input class="form-control" type="text" @bind="Model.Username" placeholder="Username" title="Username" />
-        </fieldset>
-        <fieldset>
-            <legend>Password:</legend>
-            <input type="password" @bind="Model.Password" placeholder="Password" title="Password" class="form-control" />
-        </fieldset>
-        <fieldset>
-            <legend>First Name:</legend>
-            <input class="form-control" type="text" @bind="Model.FirstName" placeholder="First Name" title="First Name" />
-        </fieldset>
-        <fieldset>
-            <legend>Last Name:</legend>
-            <input class="form-control" type="text" @bind="Model.LastName" placeholder="Last Name" title="Last Name" />
-        </fieldset>
-        <fieldset>
-            <legend>Mobile:</legend>
-            <input class="form-control" type="text" @bind="Model.MobileNumber" placeholder="Mobile" title="Mobile" />
-        </fieldset>
-        <fieldset>
-            <legend>Address:</legend>
-            <textarea class="form-control" @bind="Model.Address" placeholder="Address" title="Address"></textarea>
-        </fieldset>
-        <button type="submit" class="btn btn-warning scaledbutton">
-            <i class="fas fa-user-plus"></i>&nbsp;Register
-        </button>
-    </div>
-</form>
+        <form @onsubmit="RegisterUser">
+            <label for="username" class="custom-label">Username</label>
+            <input id="username" class="custom-input" type="text" @bind="Model.Username" placeholder="Enter your username" autocomplete="username" />
 
-<script>
-    $(function(){
-        $('.form-control').on('focus',function(){
-            $(this).attr('placeholder','');
-            $(this).parent().addClass('hasFocus');
-        });
-        $('.form-control').on('blur',function(){
-            $(this).attr('placeholder',$(this).attr('title'));
-            $(this).parent().removeClass('hasFocus');
-        });
-        $('.form-control').each(function(){
-            $(this).parent().removeClass('hasText');
-            if($(this).val().length > 0){
-                $(this).parent().addClass('hasText');
-            }
-            $(this).on('change',function(){
-                $(this).parent().removeClass('hasText');
-                if($(this).val().length > 0){
-                    $(this).parent().addClass('hasText');
-                }
-            });
-        });
-    });
-</script>
+            <label for="password" class="custom-label">Password</label>
+            <input id="password" class="custom-input" type="password" @bind="Model.Password" placeholder="Enter your password" autocomplete="new-password" />
+
+            <label for="firstname" class="custom-label">First Name</label>
+            <input id="firstname" class="custom-input" type="text" @bind="Model.FirstName" placeholder="Enter your first name" autocomplete="given-name" />
+
+            <label for="lastname" class="custom-label">Last Name</label>
+            <input id="lastname" class="custom-input" type="text" @bind="Model.LastName" placeholder="Enter your last name" autocomplete="family-name" />
+
+            <label for="mobile" class="custom-label">Mobile</label>
+            <input id="mobile" class="custom-input" type="text" @bind="Model.MobileNumber" placeholder="Enter your mobile number" autocomplete="tel" />
+
+            <label for="address" class="custom-label">Address</label>
+            <textarea id="address" class="custom-input" style="resize:vertical;" rows="2" @bind="Model.Address" placeholder="Enter your address" autocomplete="street-address"></textarea>
+
+            <button type="submit" class="custom-register-btn">
+                <i class="fas fa-user-plus"></i>&nbsp;Register
+            </button>
+        </form>
+    </div>
+</div>
