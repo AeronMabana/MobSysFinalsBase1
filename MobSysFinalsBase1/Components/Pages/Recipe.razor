@@ -1,0 +1,172 @@
+﻿@page "/recipes"
+
+<div style="max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.1rem;">
+    <div class="recipe-toggle">
+        <button class="@((showGrid ? "active" : ""))" @onclick="() => showGrid = true" title="Grid View">
+            <i class="fas fa-th"></i>
+        </button>
+        <button class="@((!showGrid ? "active" : ""))" @onclick="() => showGrid = false" title="List View">
+            <i class="fas fa-list"></i>
+        </button>
+    </div>
+    @if (showGrid)
+    {
+        <div class="recipes-grid">
+            @foreach (var recipe in Recipes)
+            {
+                <div class="recipe-card" tabindex="0" @onclick="@(() => ShowRecipe(recipe))" @onkeydown="@(e => { if (e.Key == "Enter") ShowRecipe(recipe); })">
+                    <img class="recipe-img" src="@recipe.ThumbnailUrl" alt="@recipe.Title" />
+                    <div class="recipe-content">
+                        <div class="recipe-title">@recipe.Title</div>
+                        <div class="recipe-desc">@recipe.Description</div>
+                        <div class="recipe-prep">Prep Time: @recipe.PrepTimeMinutes min</div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="recipe-list">
+            @foreach (var recipe in Recipes)
+            {
+                <div class="recipe-list-item" tabindex="0" @onclick="@(() => ShowRecipe(recipe))" @onkeydown="@(e => { if (e.Key == "Enter") ShowRecipe(recipe); })">
+                    <img class="recipe-list-img" src="@recipe.ThumbnailUrl" alt="@recipe.Title" />
+                    <div class="recipe-list-content">
+                        <div class="recipe-list-title">@recipe.Title</div>
+                        <div class="recipe-list-desc">@recipe.Description</div>
+                        <div class="recipe-list-prep">Prep Time: @recipe.PrepTimeMinutes min</div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@if (selectedRecipe != null)
+{
+    <div class="recipe-modal-bg" @onclick="CloseModal">
+        <div class="recipe-modal" @onclick:stopPropagation>
+            <button class="recipe-modal-close" @onclick="CloseModal" title="Close">&times;</button>
+            <div class="modal-title">@selectedRecipe.Title</div>
+            <div class="modal-section">
+                <img class="recipe-img" src="@selectedRecipe.ThumbnailUrl" alt="@selectedRecipe.Title" style="border-radius:14px; margin-bottom:0.7rem;max-height:180px;" />
+                <div class="modal-prep-time">Prep Time: @selectedRecipe.PrepTimeMinutes min</div>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">Ingredients</div>
+                <div class="modal-convert">
+                    Measurement:
+                    <select @bind="selectedSystem">
+                        <option value="@MeasurementSystem.US">US</option>
+                        <option value="@MeasurementSystem.Metric">Metric</option>
+                    </select>
+                </div>
+                <ul style="margin-top:0.55rem;">
+                    @foreach (var ing in selectedRecipe.Ingredients)
+                    {
+                        <li class="modal-ingredients">
+                            @if (selectedSystem == MeasurementSystem.US)
+                            {
+                                @($"{ing.AmountUS} {ing.UnitUS}")
+                            }
+                            else
+                            {
+                                @($"{ing.AmountMetric} {ing.UnitMetric}")
+                            }
+                            @($" {ing.Name}")
+                        </li>
+                    }
+                </ul>
+            </div>
+            <div class="modal-section">
+                <div class="modal-section-title">Instructions</div>
+                <div class="modal-instructions">@selectedRecipe.Instructions</div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private bool showGrid = true;
+    private RecipeModel? selectedRecipe;
+    private MeasurementSystem selectedSystem = MeasurementSystem.US;
+
+    private List<RecipeModel> Recipes = new()
+    {
+        new RecipeModel {
+            Title="Classic Pancakes",
+            ThumbnailUrl="https://images.pexels.com/photos/376464/pexels-photo-376464.jpeg?auto=compress&w=400",
+            Description="Fluffy, golden and easy to make pancakes for any breakfast.",
+            PrepTimeMinutes = 15,
+            Ingredients = new() {
+                new Ingredient { Name="Flour", AmountUS=1.5, UnitUS="cups", AmountMetric=190, UnitMetric="g" },
+                new Ingredient { Name="Milk", AmountUS=1.25, UnitUS="cups", AmountMetric=295, UnitMetric="ml" },
+                new Ingredient { Name="Eggs", AmountUS=1, UnitUS="large", AmountMetric=1, UnitMetric="large" },
+                new Ingredient { Name="Sugar", AmountUS=2, UnitUS="tbsp", AmountMetric=25, UnitMetric="g" },
+                new Ingredient { Name="Baking Powder", AmountUS=2, UnitUS="tsp", AmountMetric=8, UnitMetric="g" }
+            },
+            Instructions="1. In a large bowl, whisk flour, sugar, and baking powder.\n2. Add milk and eggs, mix until combined.\n3. Heat a lightly oiled skillet over medium heat.\n4. Pour batter and cook until bubbles form, then flip and cook until golden."
+        },
+        new RecipeModel {
+            Title="Spaghetti Bolognese",
+            ThumbnailUrl="https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg?auto=compress&w=400",
+            Description="Hearty Italian pasta with rich meat sauce.",
+            PrepTimeMinutes = 25,
+            Ingredients = new() {
+                new Ingredient { Name="Spaghetti", AmountUS=12, UnitUS="oz", AmountMetric=340, UnitMetric="g" },
+                new Ingredient { Name="Ground Beef", AmountUS=1, UnitUS="lb", AmountMetric=450, UnitMetric="g" },
+                new Ingredient { Name="Tomato Sauce", AmountUS=2, UnitUS="cups", AmountMetric=480, UnitMetric="ml" },
+                new Ingredient { Name="Onion", AmountUS=1, UnitUS="medium", AmountMetric=1, UnitMetric="medium" }
+            },
+            Instructions="1. Cook spaghetti according to package instructions.\n2. In a pan, sauté onion until translucent.\n3. Add ground beef, cook until browned.\n4. Stir in tomato sauce, simmer 10 min.\n5. Serve sauce over pasta."
+        },
+        new RecipeModel {
+            Title="Fresh Caesar Salad",
+            ThumbnailUrl="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&w=400",
+            Description="Crisp romaine with creamy Caesar and homemade croutons.",
+            PrepTimeMinutes = 10,
+            Ingredients = new() {
+                new Ingredient { Name="Romaine Lettuce", AmountUS=1, UnitUS="head", AmountMetric=1, UnitMetric="head" },
+                new Ingredient { Name="Caesar Dressing", AmountUS=0.5, UnitUS="cup", AmountMetric=120, UnitMetric="ml" },
+                new Ingredient { Name="Croutons", AmountUS=1, UnitUS="cup", AmountMetric=40, UnitMetric="g" }
+            },
+            Instructions="1. Chop romaine and place in a large bowl.\n2. Add dressing and toss to coat.\n3. Top with croutons and serve immediately."
+        }
+    };
+
+    public class RecipeModel
+    {
+        public string Title { get; set; } = string.Empty;
+        public string ThumbnailUrl { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public int PrepTimeMinutes { get; set; }
+        public List<Ingredient> Ingredients { get; set; } = new();
+        public string Instructions { get; set; } = string.Empty;
+    }
+
+    public class Ingredient
+    {
+        public string Name { get; set; } = string.Empty;
+        public double AmountUS { get; set; }
+        public string UnitUS { get; set; } = string.Empty;
+        public double AmountMetric { get; set; }
+        public string UnitMetric { get; set; } = string.Empty;
+    }
+
+    public enum MeasurementSystem
+    {
+        US,
+        Metric
+    }
+
+    private void ShowRecipe(RecipeModel recipe)
+    {
+        selectedRecipe = recipe;
+    }
+
+    private void CloseModal()
+    {
+        selectedRecipe = null;
+    }
+}
