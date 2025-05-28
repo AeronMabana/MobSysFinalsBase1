@@ -1,19 +1,28 @@
 ﻿@page "/"
+
 <SectionContent SectionName="page-buttons">
     <div id="searchBox" class="input-group header-search" style="display:none;">
         <span class="input-group-text text-warning"><i class="fa fa-search"></i></span>
-        <input id="txtSearch" type="text" class="form-control" placeholder="Search" value="@Model.Search" @onchange="SearchTerm" />
+        <input id="txtSearch" type="text" class="form-control" placeholder="Search" @onchange="SearchTerm" />
         <span class="input-group-text" onclick="hideSearchBox()"><i class="fa fa-times"></i></span>
     </div>
     <span id="controlBox">
         <button class="btn text-warning" onclick="showSearchBox()">
             <i class="fa fa-search"></i>
         </button>
-    </span>    
+    </span>
 </SectionContent>
-<section>
-    <h1>Welcome</h1>
+
+<section class="d-flex flex-column align-items-center justify-content-center" style="min-height: 70vh;">
+    <h1 class="display-4 mt-5 mb-2 text-primary fw-bold">Welcome to Recipe World!</h1>
+    <p class="lead text-secondary text-center mb-4" style="max-width: 520px;">
+        Discover and share your favorite recipes, convert units with ease, and enjoy a modern, easy-to-use recipe manager.
+    </p>
+    <a class="btn btn-warning btn-lg px-4" href="/recipes">
+        <i class="fas fa-utensils"></i> Explore Recipes
+    </a>
 </section>
+
 <script>
     function showSearchBox(){
         $('#searchBox').show();
